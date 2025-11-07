@@ -1,49 +1,174 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# =============================
+# 🔧 DEPENDÊNCIAS E CACHES
+# =============================
+node_modules/
+**/node_modules/
 .pnp.*
+/.pnp
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
-# ignorar dependências e cache
-
-**/node_modules/
 **/.cache/
+.meteor/
+.mexpo/
+.metro-cache/
+npm-packages-offline-cache/
+tmp/
+temp/
+
+# =============================
+# 🧪 TESTES
+# =============================
 coverage/
-.env
+**/coverage/
+jest-stare/
+reports/
+
+# =============================
+# ⚙️ BUILD / DISTRIBUIÇÃO
+# =============================
 dist/
+build/
+out/
+.next/
+.vercel/
+web-build/
+.release/
+build-output/
 
-# testing
-/coverage
+# =============================
+# 🧱 DOCKER / CI-CD
+# =============================
+# Docker
+.docker/
+.dockerignore
+Dockerfile.local
+Dockerfile.dev
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.dev.yml
 
-# next.js
-/.next/
-/out/
+# Logs e cache de build
+*.log
+*.pid
+*.seed
+*.pid.lock
 
-# production
-/build
+# CI/CD (GitHub Actions, Render, etc)
+.github/workflows/tmp/
+render-build/
+**/.vercel_build_output/
+.cache/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# misc
-.DS_Store
+# =============================
+# ☁️ ENV / CREDENCIAIS
+# =============================
+.env
+.env.*
+.envrc
 *.pem
+*.key
+*.crt
+*.cert
 
-# debug
+# =============================
+# 💻 IDEs E SISTEMAS OPERACIONAIS
+# =============================
+# IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.shelf/
+workspace.xml
+tasks.xml
+usage.statistics.xml
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =============================
+# 💙 TYPESCRIPT
+# =============================
+*.tsbuildinfo
+next-env.d.ts
+
+# =============================
+# 📱 EXPO / REACT NATIVE / ANDROID / iOS
+# =============================
+.expo/
+.expo-shared/
+.expo-deploy/
+web-build/
+.mexpo/
+.mpackager/
+.mpackager-cache/
+
+# Android
+android/.gradle/
+android/.idea/
+android/.cxx/
+android/app/build/
+android/build/
+android/local.properties
+*.keystore
+*.jks
+debug.keystore
+# Configurações sensíveis
+android/app/google-services.json
+
+# iOS
+ios/build/
+ios/DerivedData/
+ios/.generated/
+ios/*/*.pbxuser
+ios/*/xcuserdata/
+ios/*/profile
+ios/*/xcshareddata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+ios/Pods/
+ios/GoogleService-Info.plist
+
+# Binários de distribuição
+*.ipa
+*.apk
+*.aab
+
+# Ferramentas de release (Fastlane, EAS, etc)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+eas-build/
+eas-cache/
+
+# =============================
+# 🧰 MISC / OPCIONAL
+# =============================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+.eslintcache
+stylelintcache
+.prettier-cache
+.cache-loader
+.sass-cache/
+bower_components/
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# package-lock.json
+# pnpm-lock.yaml
+# yarn.lock
