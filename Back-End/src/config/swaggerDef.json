@@ -1,0 +1,588 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LearniFy API",
+    "version": "1.0.0",
+    "description": "Projeto Learnify, uma plataforma de blog educacional com gestão de utilizadores, posts e comentários utilizando React native Mobile."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de Desenvolvimento Local"
+    },
+    {
+      "url": "https://tcc4-learnify-rnmobile-fullstack.onrender.com",
+      "description": "Servidor de Desenvolvimento Local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Endpoints para registo e login de utilizadores."
+    },
+    {
+      "name": "Posts",
+      "description": "Operações relacionadas a posts."
+    },
+    {
+      "name": "Comentários",
+      "description": "Operações relacionadas a comentários e respostas."
+    },
+    {
+      "name": "Administração",
+      "description": "Endpoints exclusivos para administradores."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Insira o token JWT com o prefixo 'Bearer '."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c8b"
+          },
+          "name": {
+            "type": "string",
+            "example": "João Aluno"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "joao.aluno@email.com"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["aluno", "professor", "administrador"]
+          }
+        }
+      },
+      "UserInputRegister": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Novo Utilizador"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "novo@email.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "senhaForte123"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["aluno", "professor", "administrador"],
+            "description": "Opcional. O padrão é 'aluno'."
+          }
+        }
+      },
+      "UserInputLogin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "professor@email.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "senha123"
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c8b"
+          },
+          "title": {
+            "type": "string",
+            "example": "Introdução ao Node.js"
+          },
+          "content": {
+            "type": "string",
+            "example": "Este é o conteúdo do post sobre Node.js..."
+          },
+          "author": {
+            "type": "string",
+            "description": "ID do utilizador que criou o post.",
+            "example": "60d21b4667d0d8992e610c8a"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PostInput": {
+        "type": "object",
+        "required": ["title", "content"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Novo Post sobre TypeScript"
+          },
+          "content": {
+            "type": "string",
+            "example": "Conteúdo detalhado sobre os benefícios do TypeScript."
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c8c"
+          },
+          "content": {
+            "type": "string",
+            "example": "Excelente post, muito informativo!"
+          },
+          "post": {
+            "type": "string",
+            "description": "ID do post ao qual o comentário pertence."
+          },
+          "author": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "parentComment": {
+            "type": "string",
+            "description": "ID do comentário pai (se for uma resposta)."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CommentInput": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "Tenho uma dúvida sobre o exemplo de código."
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Registar um novo utilizador",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInputRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Utilizador criado com sucesso."
+          },
+          "409": {
+            "description": "O e-mail fornecido já está em uso."
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Autenticar um utilizador e obter um token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInputLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login bem-sucedido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "E-mail ou senha inválidos."
+          }
+        }
+      }
+    },
+    "/api/posts": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Listar todos os posts (público)",
+        "responses": {
+          "200": {
+            "description": "Uma lista de posts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Criar um novo post (Professor ou Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post criado com sucesso."
+          }
+        }
+      }
+    },
+    "/api/posts/search": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Procurar posts por título ou conteúdo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Termo a ser procurado."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de posts correspondentes à procura."
+          }
+        }
+      }
+    },
+    "/api/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Obter um post pelo ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do post."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do post."
+          },
+          "404": {
+            "description": "Post não encontrado."
+          }
+        }
+      },
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Atualizar um post (Professor ou Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do post a ser atualizado."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post atualizado com sucesso."
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Apagar um post (Professor ou Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do post a ser apagado."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Post apagado com sucesso."
+          }
+        }
+      }
+    },
+    "/api/posts/{postId}/comments": {
+      "get": {
+        "tags": ["Comentários"],
+        "summary": "Listar comentários de um post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do post."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de comentários do post."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Comentários"],
+        "summary": "Adicionar um comentário a um post (Autenticado)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "postId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do post a ser comentado."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comentário criado com sucesso."
+          }
+        }
+      }
+    },
+    "/api/comments/{commentId}/reply": {
+      "post": {
+        "tags": ["Comentários"],
+        "summary": "Responder a um comentário (Professor ou Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "commentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do comentário a ser respondido."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resposta criada com sucesso."
+          }
+        }
+      }
+    },
+    "/api/admin/posts": {
+      "get": {
+        "tags": ["Administração"],
+        "summary": "Listar todos os posts (Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de todos os posts do sistema."
+          }
+        }
+      }
+    },
+    "/api/admin/users/{id}": {
+      "delete": {
+        "tags": ["Administração"],
+        "summary": "Apagar um utilizador (Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do utilizador a ser apagado."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Utilizador apagado com sucesso."
+          }
+        }
+      }
+    },
+    "/api/admin/comments/{id}": {
+      "delete": {
+        "tags": ["Administração"],
+        "summary": "Apagar um comentário e as suas respostas (Admin)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do comentário a ser apagado."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Comentário apagado com sucesso."
+          }
+        }
+      }
+    }
+  }
+}
