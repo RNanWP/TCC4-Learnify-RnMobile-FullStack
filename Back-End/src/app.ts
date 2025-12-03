@@ -4,7 +4,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import uploadRouter from "./routes/upload";
+import uploadRouter from "./routes/uploadRoutes";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./config/swaggerDef.json";
