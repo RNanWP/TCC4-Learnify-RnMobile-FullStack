@@ -4,7 +4,6 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import uploadRouter from "./routes/uploadRoutes";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./config/swaggerDef.json";
@@ -16,7 +15,6 @@ app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use("/api/upload", uploadRouter);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);

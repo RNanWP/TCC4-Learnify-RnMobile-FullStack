@@ -1,42 +1,28 @@
- 
- FROM node:20-alpine AS deps
+FROM node:20-slim AS builder
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
+RUN npm install
 
-RUN npm ci
-
-FROM node:20-alpine AS build
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules node_modules
-
-COPY tsconfig.json .
-
-COPY src src
-
+COPY . .
 RUN npm run build
+# RUN npm prune --production
 
-FROM node:20-alpine AS runner
+# --- PRODUÇÃO ---
+FROM node:20-slim
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-ENV NODE_ENV=production
-
-COPY --from=deps /app/node_modules node_modules
-
-COPY --from=build /app/dist dist
-
-COPY .env ./
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
 
 EXPOSE 3000
 
 CMD ["node", "dist/server.js"]
 
- 
- 
+
 #  Build
 # FROM node:20-slim AS builder
 

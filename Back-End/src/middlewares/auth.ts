@@ -24,11 +24,13 @@ export const authenticate: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (!JWT_SECRET) {
+    if (!process.env.JWT_SECRET && !JWT_SECRET) {
       throw new Error("Chave secreta JWT não configurada no servidor.");
     }
 
-    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const secret = process.env.JWT_SECRET || JWT_SECRET;
+
+    const payload = jwt.verify(token, secret) as JwtPayload;
     req.user = payload;
     next();
   } catch (error) {

@@ -1,5 +1,11 @@
+/// <reference types="jest" />
+
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+
+process.env.JWT_SECRET = "segredo_de_teste_123";
+process.env.NODE_ENV = "test";
+delete process.env.S3_BUCKET;
 
 jest.setTimeout(30000);
 
@@ -12,7 +18,7 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  const { collections } = mongoose.connection;
+  const collections = mongoose.connection.collections;
   for (const key in collections) {
     await collections[key].deleteMany({});
   }
