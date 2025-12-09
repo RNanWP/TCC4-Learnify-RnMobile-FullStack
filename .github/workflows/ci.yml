@@ -1,25 +1,46 @@
-name: Node CI
+name: CI/CD - LearniFy (Build & Test)
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   pull_request:
-    branches: [main]
+    branches: ["main"]
 
 jobs:
-  test:
+  build-and-test:
+    name: 🧪 Testes e Build
     runs-on: ubuntu-latest
+
     services:
       mongo:
         image: mongo:7
-        ports: ["27017:27017"]
+        ports:
+          - 27017:27017
         options: >-
           --health-cmd="mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
           --health-interval=10s --health-timeout=5s --health-retries=5
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npm run build
-      - run: npm test -- --coverage
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: Back-End/package-lock.json
+
+      - name: 📦 Instalar Dependências
+        working-directory: ./Back-End
+        run: npm ci
+
+      - name: 🧪 Rodar Testes (Jest)
+        working-directory: ./Back-End
+        run: npm test -- --coverage
+        env:
+          # Variáveis exclusivas para o ambiente de CI
+          NODE_ENV: test
+          JWT_SECRET: "segredo_de_teste_ci_github"
+          MONGO_URI: "mongodb://localhost:27017/LearniFy_Test"
+          S3_BUCKET: "teste-bucket" # Mock para passar no CI
