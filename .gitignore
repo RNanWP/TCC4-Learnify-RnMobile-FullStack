@@ -168,7 +168,3 @@ bower_components/
 *.tmp
 *.bak
 *.orig
-
-# package-lock.json
-# pnpm-lock.yaml
-# yarn.lock
