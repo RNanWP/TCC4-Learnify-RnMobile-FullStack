@@ -5,7 +5,6 @@ import { Comment } from "../models/Comment";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-// Método usado para colcoar na role a criação do usuario para fazer testes com insominia
 interface JwtPayload {
   id: string;
   email: string;

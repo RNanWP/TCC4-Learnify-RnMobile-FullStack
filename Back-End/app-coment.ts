@@ -54,6 +54,7 @@
 // npm run build
 // npm run build
 // docker-compose up --build
+// npm test
 
 // npm i fastify-type-provider-zod @fastify/cors zod /    NÃO UTILIZADO
 
