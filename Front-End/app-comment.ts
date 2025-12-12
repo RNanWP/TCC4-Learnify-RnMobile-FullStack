@@ -34,15 +34,14 @@
 // É um operador lógico de negação lógica, função de inverter um valor booleano.
 // usamos para checar se uma variável não é null ou undefined
 // garantir que um valor obrigatório não é vazio
-// 
+//
 //    Schema
 // O schema é um modelo que define a estrutura lógica de um banco de dados, incuindo tabelas, colunas, tipos de dados, relacionamentos e restrições
 // Ele é usado no banco de dados mostrando como os dados são organizados e como eles podem ser acessados
-// 
+//
 //    Timetamps
 // Usando para documentar e registrar quando um evento ocorreu, como a criação ou modificação de um arquivo, ou o envio de uma mensagem
 // Em alguem casos podem ser usados para verificar a autenticidade de um documento eletronico
-
 
 //          INSTALAÇÃOES
 // _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
@@ -56,16 +55,15 @@
 // docker-compose up --build
 // npm test
 // npx expo start --android --clear
+// npx expo start -c
 
 // npm i fastify-type-provider-zod @fastify/cors zod /    NÃO UTILIZADO
-
 
 // Onde eu vejo o projeto rodando
 // http://localhost:3000/api/posts
 
-
 // Scripts para Lovable
-// 
+//
 // Criar um pequeno footer no site para adicionar o link do meu github [https://github.com/RNanWP/LingroomTC], linkedin [https://www.linkedin.com/in/renanodev] e com algo como Direitos autorais © 2025 RenanODev Pós-Tech. Todos os direitos reservados.
 // Adicionar mais estilização no site
 // Adicionar mais funcionalidades no blog

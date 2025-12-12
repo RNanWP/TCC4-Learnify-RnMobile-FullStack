@@ -1,50 +1,57 @@
 import React from "react";
-import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-const FeedScreen = () => (
-  <View className="flex-1 justify-center items-center bg-white">
-    <Text>Feed</Text>
-  </View>
-);
-const CreateScreen = () => (
-  <View className="flex-1 justify-center items-center bg-white">
-    <Text>Criar</Text>
-  </View>
-);
-const ProfileScreen = () => (
-  <View className="flex-1 justify-center items-center bg-white">
-    <Text>Perfil</Text>
-  </View>
-);
+import Feed from "../screens/home/Feed";
+import CreatePost from "../screens/post/CreatePost";
+import Profile from "../screens/profile/Profile";
 
 const Tab = createBottomTabNavigator();
 
 export default function AppRoutes() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#3B82F6",
+        tabBarInactiveTintColor: "#9CA3AF",
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 10,
+          paddingTop: 10,
+          backgroundColor: "#FFF",
+          borderTopWidth: 1,
+          borderTopColor: "#F3F4F6",
+        },
+      }}
+    >
+      {/* Rota 1: Feed (Home) */}
       <Tab.Screen
         name="Feed"
-        component={FeedScreen}
+        component={Feed}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
         }}
       />
+
+      {/* Rota 2: Criar Post */}
       <Tab.Screen
         name="Create"
-        component={CreateScreen}
+        component={CreatePost}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle" color={color} size={size} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="add-circle" color={color} size={32} />
           ),
         }}
       />
+
+      {/* Rota 3: Perfil */}
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={Profile}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
