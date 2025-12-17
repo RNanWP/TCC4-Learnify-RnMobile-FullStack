@@ -3,20 +3,20 @@ import { authenticate, authorize } from "../middlewares/auth";
 import { asyncHandler } from "../utils/asyncHandler";
 import * as commentController from "../controllers/commentController";
 
-// const router = Router();
+const router = Router();
 
-// // mostra todos os comentários
-// router.get(
-//   "/posts/:postId/comments",
-//   asyncHandler(commentController.getCommentsByPost)
-// );
+// mostra todos os comentários
+router.get(
+  "/posts/:postId/comments",
+  asyncHandler(commentController.getCommentsByPost)
+);
 
-// // Alunos cria comentário
-// router.post(
-//   "/posts/:postId/comments",
-//   authenticate,
-//   asyncHandler(commentController.createComment)
-// );
+// Alunos cria comentário
+router.post(
+  "/posts/:postId/comments",
+  authenticate,
+  asyncHandler(commentController.createComment)
+);
 
 // // Proff e ADM respondem comentário
 // router.post(
@@ -26,16 +26,18 @@ import * as commentController from "../controllers/commentController";
 //   asyncHandler(commentController.createReply)
 // );
 
-// export default router;
-
-const router = Router();
-
 // Professor e ADM respondem a um comentário específico
 router.post(
   "/:commentId/reply",
   authenticate,
   authorize("professor", "administrador"),
   asyncHandler(commentController.createReply)
+);
+
+router.delete(
+  "/:id",
+  authenticate,
+  asyncHandler(commentController.deleteComment)
 );
 
 export default router;

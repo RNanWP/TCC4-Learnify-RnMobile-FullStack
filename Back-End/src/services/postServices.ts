@@ -1,4 +1,5 @@
 import { Post, IPost } from "../models/Post";
+import { Comment } from "../models/Comment";
 
 // Buscar post por palavra chave no titulo ou conteudo
 export async function searchPostService(query: string): Promise<IPost[]> {
@@ -54,5 +55,6 @@ export async function updatePostService(
 }
 
 export async function deletePostService(id: string): Promise<IPost | null> {
+  await Comment.deleteMany({ post: id });
   return Post.findByIdAndDelete(id).exec();
 }

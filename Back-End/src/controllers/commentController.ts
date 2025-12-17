@@ -2,20 +2,6 @@ import { Request, Response } from "express";
 import * as commentService from "../services/commentService";
 import { IComment, Comment } from "../models/Comment";
 
-// listar comentarios
-// export async function getCommentsByPost(req: Request, res: Response) {
-//   try {
-//     const comments = await commentService.getCommentsByPostService(
-//       req.params.postId
-//     );
-//     res.status(200).json(comments);
-//   } catch (error: any) {
-//     res
-//       .status(500)
-//       .json({ message: "Erro ao buscar comentários", error: error.message });
-//   }
-// }
-
 export async function getCommentsByPost(req: Request, res: Response) {
   try {
     const { postId } = req.params;
@@ -28,23 +14,6 @@ export async function getCommentsByPost(req: Request, res: Response) {
       .json({ message: "Erro ao buscar comentários", error: error.message });
   }
 }
-
-// export async function getCommentsByPostService(
-//   postId: string
-// ): Promise<IComment[]> {
-//   const comments = await Comment.find({ post: postId, parentComment: null })
-//     .populate("author", "name")
-//     .populate({
-//       path: "replies",
-//       populate: {
-//         path: "author",
-//         select: "name",
-//       },
-//     })
-//     .sort({ createdAt: "desc" });
-
-//   return comments;
-// }
 
 // Criar comentario
 export async function createComment(req: Request, res: Response) {
@@ -111,11 +80,25 @@ export async function createReply(req: Request, res: Response) {
 export async function deleteComment(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const deletedComment = await commentService.deleteCommentService(id);
+    const userId = (req.user as any).id;
+    const userRole = (req.user as any).role;
 
-    if (!deletedComment) {
+    const comment = await Comment.findById(id);
+
+    if (!comment) {
       return res.status(404).json({ message: "Comentário não encontrado." });
     }
+
+    const isOwner = comment.author.toString() === userId;
+    const isAdmin = userRole === "administrador";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "Você não tem permissão para excluir este comentário.",
+      });
+    }
+
+    await commentService.deleteCommentService(id);
 
     res.status(204).send();
   } catch (error: any) {
