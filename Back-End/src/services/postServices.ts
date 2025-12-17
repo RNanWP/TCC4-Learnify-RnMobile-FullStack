@@ -11,7 +11,7 @@ export async function searchPostService(query: string): Promise<IPost[]> {
     ],
   })
     .sort({ createdAt: -1 })
-    .populate("author", "name")
+    .populate("author", "name avatarUrl")
     .exec();
 }
 
@@ -19,18 +19,21 @@ export async function searchPostService(query: string): Promise<IPost[]> {
 export async function getAdminPostService(): Promise<IPost[]> {
   const posts = await Post.find()
     .sort({ createdAt: -1 })
-    .populate("author", "name")
+    .populate("author", "name avatarUrl")
     .exec();
 
   return posts.filter((post: IPost) => post.author);
 }
 
 export async function getAllPostsService(): Promise<IPost[]> {
-  return Post.find().sort({ createdAt: -1 }).populate("author", "name").exec();
+  return Post.find()
+    .sort({ createdAt: -1 })
+    .populate("author", "name avatarUrl")
+    .exec();
 }
 
 export async function getPostByIdService(id: string): Promise<IPost | null> {
-  return Post.findById(id).exec();
+  return Post.findById(id).populate("author", "name avatarUrl").exec();
 }
 
 export async function createPostService(data: {

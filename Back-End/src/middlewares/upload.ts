@@ -1,7 +1,7 @@
 import multer from "multer";
 import multerS3 from "multer-s3";
-import { S3Client } from "@aws-sdk/client-s3";
 import { s3 } from "../config/s3";
+import { Request } from "express";
 
 const isTest = process.env.NODE_ENV === "test" || !process.env.S3_BUCKET;
 
@@ -10,31 +10,22 @@ const storage = isTest
   : multerS3({
       s3,
       bucket: process.env.S3_BUCKET!,
-      acl: "public-read",
       contentType: multerS3.AUTO_CONTENT_TYPE,
-      key: (req, file, cb) => {
-        cb(null, `${Date.now().toString()}-${file.originalname}`);
+      key: (req: Request, file, cb) => {
+        // @ts-ignore
+        const userId = req.user?.id;
+
+        if (req.originalUrl.includes("avatar") && userId) {
+          const fileName = `avatars/${userId}.jpeg`;
+          cb(null, fileName);
+        } else {
+          const fileName = `posts/${Date.now()}-${file.originalname.replace(
+            /\s+/g,
+            "-"
+          )}`;
+          cb(null, fileName);
+        }
       },
     });
 
 export const upload = multer({ storage });
-
-// const s3 = new S3Client({
-//   region: process.env.S3_REGION,
-//   credentials: {
-//     accessKeyId: process.env.S3_ACCESS_KEY!,
-//     secretAccessKey: process.env.S3_SECRET_KEY!,
-//   },
-// });
-
-// export const upload = multer({
-//   storage: multerS3({
-//     s3,
-//     bucket: process.env.S3_BUCKET!,
-//     acl: "public-read",
-//     contentType: multerS3.AUTO_CONTENT_TYPE,
-//     key: (_req, file, cb) => {
-//       cb(null, `uploads/${Date.now()}-${file.originalname}`);
-//     },
-//   }),
-// });

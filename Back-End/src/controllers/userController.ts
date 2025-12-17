@@ -20,7 +20,6 @@ export async function register(req: Request, res: Response) {
       .status(201)
       .json({ message: "Usuário criado com sucesso!", user: userResponse });
   } catch (error: any) {
-    // trata email duplicado
     if (error.code === 11000) {
       return res.status(409).json({ message: "Este email já está em uso." });
     }
@@ -51,6 +50,28 @@ export async function login(req: Request, res: Response) {
     res
       .status(500)
       .json({ message: "Erro ao fazer login", error: error.message });
+  }
+}
+
+export async function uploadAvatar(req: Request, res: Response) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Nenhuma imagem enviada." });
+    }
+
+    // @ts-ignore
+    const userId = req.user.id;
+
+    // @ts-ignore
+    const fileUrl = req.file.location || req.file.path;
+
+    const user = await userService.updateAvatarService(userId, fileUrl);
+
+    res.json({ message: "Avatar atualizado!", user });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Erro ao atualizar avatar", error: error.message });
   }
 }
 

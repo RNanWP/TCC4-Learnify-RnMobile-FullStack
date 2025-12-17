@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Post } from "../models/Post";
 import * as postService from "../services/postServices";
 
 // barra de pesquisa
@@ -91,3 +92,29 @@ export async function deletePost(req: Request, res: Response) {
     res.status(500).json({ message: "Erro ao excluir post" });
   }
 }
+
+export const toggleLike = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    // @ts-ignore:
+    const userId = req.user.id;
+
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json({ message: "Post não encontrado" });
+    // @ts-ignore
+    const likeIndex = post.likes.indexOf(userId);
+
+    if (likeIndex === -1) {
+      // @ts-ignore
+      post.likes.push(userId);
+    } else {
+      // @ts-ignore
+      post.likes.splice(likeIndex, 1);
+    }
+
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao dar like" });
+  }
+};

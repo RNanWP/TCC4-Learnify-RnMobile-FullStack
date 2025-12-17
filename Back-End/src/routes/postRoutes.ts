@@ -88,6 +88,12 @@ router.get(
   asyncHandler(postController.getAdminPosts)
 );
 
+router.patch(
+  "/:id/like",
+  authenticate,
+  asyncHandler(postController.toggleLike)
+);
+
 export default router;
 
 // --- Rotas Protegidas (Professores e Admins) ---

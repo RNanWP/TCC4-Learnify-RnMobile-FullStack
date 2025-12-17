@@ -25,17 +25,14 @@ export async function registerUserService(
   return user.save();
 }
 
-// ---------------------------------------
+export async function updateAvatarService(userId: string, avatarUrl: string) {
+  return await User.findByIdAndUpdate(
+    userId,
+    { avatarUrl: avatarUrl },
+    { new: true }
+  );
+}
 
-// Registrar usuario
-// export async function registerUserService(
-//   userData: Omit<IUser, "comparePassword">
-// ): Promise<IUser> {
-//   const user = new User(userData);
-//   return user.save();
-// }
-
-// Autenticando usuario
 export async function loginUserService(
   email: string,
   password: string
