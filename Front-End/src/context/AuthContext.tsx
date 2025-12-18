@@ -6,6 +6,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  avatarUrl?: string;
   role: "aluno" | "professor" | "administrador";
 }
 
@@ -15,6 +16,7 @@ interface AuthContextData {
   loading: boolean;
   signIn: (email: string, pass: string) => Promise<void>;
   signOut: () => void;
+  updateUser: (userData: User) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -27,7 +29,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     async function loadStorageData() {
-      // Tenta recuperar token e usuário salvos no celular
       const storedUser = await SecureStore.getItemAsync("user_data");
       const storedToken = await SecureStore.getItemAsync("user_token");
 
@@ -49,7 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const { user, token } = response.data;
 
-    // Salva no dispositivo
     await SecureStore.setItemAsync("user_token", token);
     await SecureStore.setItemAsync("user_data", JSON.stringify(user));
 
@@ -63,9 +63,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(null);
   }
 
+  async function updateUser(userData: User) {
+    setUser(userData);
+    await SecureStore.setItemAsync("user_data", JSON.stringify(userData));
+  }
+
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, user, loading, signIn, signOut }}
+      value={{ signed: !!user, user, loading, signIn, signOut, updateUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -20,13 +20,12 @@ export default function CreatePost({ navigation }: any) {
   const [image, setImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // Selecionar Imagem
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+      aspect: [16, 9],
+      quality: 0.8,
     });
 
     if (!result.canceled) {
@@ -34,28 +33,38 @@ export default function CreatePost({ navigation }: any) {
     }
   };
 
-  // Enviar Post
+  const handleCancel = () => {
+    setTitle("");
+    setContent("");
+    setImage(null);
+    navigation.goBack();
+  };
+
   async function handlePublish() {
-    if (!title || !content)
-      return Alert.alert("Ops", "Preencha título e conteúdo!");
+    if (!title.trim() || !content.trim()) {
+      return Alert.alert("Atenção", "Preencha título e conteúdo.");
+    }
 
     setUploading(true);
+
     try {
-      // Form Data para envio de arquivo
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
 
       if (image) {
-        // Gambiarra necessária para o React Native entender o arquivo
-        const filename = image.split("/").pop();
-        const match = /\.(\w+)$/.exec(filename || "");
-        const type = match ? `image/${match[1]}` : `image`;
+        const filename = image.split("/").pop() || "upload.jpg";
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : `image/jpeg`;
 
-        formData.append("image", { uri: image, name: filename, type } as any);
+        // @ts-ignore
+        formData.append("image", {
+          uri: image,
+          name: filename,
+          type,
+        });
       }
 
-      // IMPORTANTE: O Header 'Content-Type': 'multipart/form-data' é automático no Axios quando envia FormData
       await api.post("/posts", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -64,89 +73,91 @@ export default function CreatePost({ navigation }: any) {
       setTitle("");
       setContent("");
       setImage(null);
-      navigation.navigate("Feed"); // Volta e atualiza
+      navigation.navigate("Feed");
     } catch (error) {
-      Alert.alert("Erro", "Falha ao publicar post.");
-      console.error(error);
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível publicar. Tente novamente.");
     } finally {
       setUploading(false);
     }
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-100">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+    <SafeAreaView className="flex-1 bg-gray-100">
+      <View className="bg-white px-4 py-3 border-b border-gray-200 flex-row justify-between items-center shadow-sm">
+        <TouchableOpacity onPress={handleCancel}>
           <Text className="text-gray-500 text-lg">Cancelar</Text>
         </TouchableOpacity>
-        <Text className="font-bold text-lg text-gray-900">Novo Post</Text>
+        <Text className="text-lg font-bold text-gray-800">
+          Criar Publicação
+        </Text>
         <TouchableOpacity
           onPress={handlePublish}
           disabled={uploading}
           className={`px-4 py-2 rounded-full ${
-            uploading ? "bg-gray-400" : "bg-blue-600"
+            uploading ? "bg-gray-300" : "bg-blue-600"
           }`}
         >
           {uploading ? (
-            <ActivityIndicator color="#FFF" />
+            <ActivityIndicator size="small" color="#FFF" />
           ) : (
             <Text className="text-white font-bold">Publicar</Text>
           )}
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="p-5">
-        {/* Seção 1: Título */}
-        <View className="mb-6">
-          <Text className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
-            Título do Post
+      <ScrollView className="flex-1 p-4">
+        <View className="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-200">
+          <Text className="text-xs font-bold text-gray-400 uppercase mb-3">
+            Capa da Publicação
+          </Text>
+          <TouchableOpacity
+            onPress={pickImage}
+            className="w-full h-48 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 items-center justify-center overflow-hidden"
+          >
+            {image ? (
+              <Image
+                source={{ uri: image }}
+                className="w-full h-full"
+                resizeMode="cover"
+              />
+            ) : (
+              <View className="items-center">
+                <Ionicons name="image-outline" size={40} color="#9CA3AF" />
+                <Text className="text-gray-400 font-medium mt-2">
+                  Toque para adicionar imagem
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View className="bg-white p-4 rounded-xl shadow-sm mb-4 border border-gray-200">
+          <Text className="text-xs font-bold text-gray-400 uppercase mb-2">
+            Título
           </Text>
           <TextInput
-            className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-2"
-            placeholder="Ex: Aprendendo Hooks no React..."
-            placeholderTextColor="#9CA3AF"
+            className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-2"
+            placeholder="Título do post..."
             value={title}
             onChangeText={setTitle}
           />
         </View>
 
-        {/* Seção 2: Conteúdo */}
-        <View className="mb-6">
-          <Text className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
+        <View className="bg-white p-4 rounded-xl shadow-sm mb-8 border border-gray-200 min-h-[200px]">
+          <Text className="text-xs font-bold text-gray-400 uppercase mb-2">
             Conteúdo
           </Text>
           <TextInput
-            className="text-base text-gray-700 min-h-[120px] bg-gray-50 p-3 rounded-xl text-top"
-            placeholder="Compartilhe seu conhecimento aqui..."
-            placeholderTextColor="#9CA3AF"
+            className="text-base text-gray-700 leading-6"
+            placeholder="Escreva seu conteúdo aqui..."
             multiline
             textAlignVertical="top"
             value={content}
             onChangeText={setContent}
+            style={{ minHeight: 150 }}
           />
         </View>
-
-        {/* Seção 3: Imagem (Botão Grande e Visível) */}
-        <TouchableOpacity
-          onPress={pickImage}
-          className="border-2 border-dashed border-gray-300 rounded-xl h-48 items-center justify-center bg-gray-50 active:bg-gray-100"
-        >
-          {image ? (
-            <Image
-              source={{ uri: image }}
-              className="w-full h-full rounded-xl"
-              resizeMode="cover"
-            />
-          ) : (
-            <>
-              <Ionicons name="image-outline" size={40} color="#9CA3AF" />
-              <Text className="text-gray-400 mt-2 font-medium">
-                Toque para adicionar capa
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
