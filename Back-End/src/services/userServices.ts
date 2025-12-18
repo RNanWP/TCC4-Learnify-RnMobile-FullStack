@@ -49,6 +49,16 @@ export async function loginUserService(
   return { user, token };
 }
 
+export async function updateUserService(id: string, data: Partial<IUser>) {
+  const { password, ...safeData } = data as any;
+
+  return await User.findByIdAndUpdate(
+    id,
+    safeData,
+    { new: true, runValidators: true }
+  ).select("-password");
+}
+
 // Admin Delete
 export async function deleteUserService(id: string): Promise<IUser | null> {
   const user = await User.findByIdAndDelete(id);

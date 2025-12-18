@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import * as userController from "../controllers/userController";
-import { authenticate } from "../middlewares/auth";
+import { authenticate, authorize } from "../middlewares/auth";
 import { upload } from "../middlewares/upload";
 
 const router = Router();
@@ -14,6 +14,36 @@ router.patch(
   authenticate,
   upload.single("avatar"),
   asyncHandler(userController.uploadAvatar)
+);
+
+router.patch(
+  "/avatar",
+  authenticate,
+  upload.single("avatar"),
+  asyncHandler(userController.uploadAvatar)
+);
+
+router.put(
+  "/:id",
+  authenticate,
+  authorize("administrador", "professor"),
+  asyncHandler(userController.updateUser)
+);
+
+// Admin Deletando
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("administrador"),
+  asyncHandler(userController.deleteUser)
+);
+
+// Listar Todos
+router.get(
+  "/",
+  authenticate,
+  authorize("administrador", "professor"),
+  asyncHandler(userController.getAllUsers)
 );
 
 export default router;

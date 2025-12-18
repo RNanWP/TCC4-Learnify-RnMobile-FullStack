@@ -75,6 +75,33 @@ export async function uploadAvatar(req: Request, res: Response) {
   }
 }
 
+// Atualizar Usuário (Admin/Prof)
+export async function updateUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { name, email, role } = req.body;
+
+    const updatedUser = await userService.updateUserService(id, {
+      name,
+      email,
+      role,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    res.json({ message: "Usuário atualizado com sucesso!", user: updatedUser });
+  } catch (error: any) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Este email já está em uso." });
+    }
+    res
+      .status(500)
+      .json({ message: "Erro ao atualizar usuário", error: error.message });
+  }
+}
+
 // Admin Delete
 export async function deleteUser(req: Request, res: Response) {
   try {
