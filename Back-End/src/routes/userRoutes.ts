@@ -9,19 +9,12 @@ const router = Router();
 router.post("/register", asyncHandler(userController.register));
 router.post("/login", asyncHandler(userController.login));
 
-router.patch(
-  "/avatar",
-  authenticate,
-  upload.single("avatar"),
-  asyncHandler(userController.uploadAvatar)
-);
-
-router.patch(
-  "/avatar",
-  authenticate,
-  upload.single("avatar"),
-  asyncHandler(userController.uploadAvatar)
-);
+// router.patch(
+//   "/avatar",
+//   authenticate,
+//   upload.single("avatar"),
+//   asyncHandler(userController.uploadAvatar)
+// );
 
 router.put(
   "/:id",

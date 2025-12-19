@@ -174,6 +174,16 @@ describe("Testes das Rotas de Posts", () => {
 });
 
 describe("Testes de Falha do Post Controller", () => {
+  let consoleSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it("Deve retornar status 500 se o serviço falhar ao criar um post", async () => {
     const createPostSpy = jest
       .spyOn(postService, "createPostService")
@@ -181,12 +191,15 @@ describe("Testes de Falha do Post Controller", () => {
 
     const postRes = await request(app)
       .post("/api/posts")
-      .set("Authorization", `Bearer ${professorToken}`)
-      .send({ title: "Post que vai falhar", content: "Conteúdo" });
+      .set("Authorization", `Bearer ${adminToken}`)
+      .send({
+        title: "Post Que Vai Falhar",
+        content: "Conteúdo",
+      });
 
     expect(postRes.status).toBe(500);
     expect(postRes.body).toHaveProperty("message", "Erro ao criar post");
 
-    createPostSpy.mockRestore();
+    expect(consoleSpy).toHaveBeenCalled();
   });
 });

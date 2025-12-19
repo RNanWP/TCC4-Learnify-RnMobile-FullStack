@@ -1,5 +1,6 @@
 import { Post, IPost } from "../models/Post";
 import { Comment } from "../models/Comment";
+import { Types } from "mongoose";
 
 // Buscar post por palavra chave no titulo ou conteudo
 export async function searchPostService(query: string): Promise<IPost[]> {
@@ -57,4 +58,23 @@ export async function updatePostService(
 export async function deletePostService(id: string): Promise<IPost | null> {
   await Comment.deleteMany({ post: id });
   return Post.findByIdAndDelete(id).exec();
+}
+
+export async function toggleLikeService(postId: string, userId: string) {
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new Error("Post não encontrado");
+  }
+
+  const userObjectId = new Types.ObjectId(userId);
+  const isLiked = post.likes.some((id) => id.equals(userObjectId));
+
+  if (isLiked) {
+    post.likes = post.likes.filter((id) => !id.equals(userObjectId));
+  } else {
+    post.likes.push(userObjectId);
+  }
+
+  await post.save();
+  return post;
 }

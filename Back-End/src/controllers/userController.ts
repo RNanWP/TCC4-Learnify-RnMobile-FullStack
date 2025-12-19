@@ -53,27 +53,34 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-export async function uploadAvatar(req: Request, res: Response) {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Nenhuma imagem enviada." });
-    }
+// export async function uploadAvatar(req: Request, res: Response) {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ message: "Nenhuma imagem enviada." });
+//     }
 
-    // @ts-ignore
-    const userId = req.user.id;
+//     // @ts-ignore
+//     const userId = req.user.id;
 
-    // @ts-ignore
-    const fileUrl = req.file.location || req.file.path;
+//     let fileUrl = "";
 
-    const user = await userService.updateAvatarService(userId, fileUrl);
+//     if ((req.file as any).location) {
+//       fileUrl = (req.file as any).location;
+//     } else {
+//       fileUrl = `${req.protocol}://${req.get("host")}/uploads/${
+//         req.file.filename
+//       }`;
+//     }
 
-    res.json({ message: "Avatar atualizado!", user });
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: "Erro ao atualizar avatar", error: error.message });
-  }
-}
+//     const user = await userService.updateAvatarService(userId, fileUrl);
+
+//     res.json({ message: "Avatar atualizado!", user });
+//   } catch (error: any) {
+//     res
+//       .status(500)
+//       .json({ message: "Erro ao atualizar avatar", error: error.message });
+//   }
+// }
 
 // Atualizar Usuário (Admin/Prof)
 export async function updateUser(req: Request, res: Response) {

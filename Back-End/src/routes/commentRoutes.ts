@@ -11,6 +11,13 @@ router.get(
   asyncHandler(commentController.getCommentsByPost)
 );
 
+router.get(
+  "/",
+  authenticate,
+  authorize("administrador"),
+  asyncHandler(commentController.getAllComments)
+);
+
 // Alunos cria comentário
 router.post(
   "/posts/:postId/comments",

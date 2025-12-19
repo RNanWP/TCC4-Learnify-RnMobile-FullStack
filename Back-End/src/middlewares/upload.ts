@@ -16,7 +16,7 @@ const storage = isTest
         const userId = req.user?.id;
 
         if (req.originalUrl.includes("avatar") && userId) {
-          const fileName = `avatars/${userId}.jpeg`;
+          const fileName = `avatars/${userId}-${Date.now()}.jpeg`;
           cb(null, fileName);
         } else {
           const fileName = `posts/${Date.now()}-${file.originalname.replace(

@@ -7,6 +7,7 @@ import adminRoutes from "./routes/adminRoutes";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./config/swaggerDef.json";
+import path from "path";
 
 const app = express();
 
@@ -20,5 +21,9 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 
 app.use("/api/admin", adminRoutes);
+app.use(
+  "/uploads",
+  express.static(path.resolve(__dirname, "../public/uploads"))
+);
 
 export { app };
