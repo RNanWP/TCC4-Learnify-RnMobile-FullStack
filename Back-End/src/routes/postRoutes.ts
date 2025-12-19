@@ -37,6 +37,9 @@ router.post(
   authorize("professor", "administrador"),
   upload.single("image"),
   asyncHandler(async (req: Request, res: Response) => {
+    console.log("--- TENTATIVA DE UPLOAD ---");
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
     const { title, content, body } = req.body;
     const finalContent = content || body;
 
