@@ -1,16 +1,19 @@
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
+import { getStorageItem } from "../utils/storage";
 
-const API_URL = "http://192.168.100.86:3000/api";
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "https://tcc4-learnify-rnmobile-fullstack.onrender.com/api";
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 15000,
+  timeout: 60000,
 });
 
 api.interceptors.request.use(async (config) => {
   try {
-    const token = await SecureStore.getItemAsync("user_token");
+    const token = await getStorageItem("user_token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

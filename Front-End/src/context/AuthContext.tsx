@@ -1,5 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import * as SecureStore from "expo-secure-store";
+import {
+  saveStorageItem,
+  removeStorageItem,
+  getStorageItem,
+} from "../utils/storage";
 import api from "../services/api";
 
 interface User {
@@ -29,12 +33,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     async function loadStorageData() {
-      const storedUser = await SecureStore.getItemAsync("user_data");
-      const storedToken = await SecureStore.getItemAsync("user_token");
+      const storedUser = await getStorageItem("user_data");
+      const storedToken = await getStorageItem("user_token");
 
       if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
-        api.defaults.headers.Authorization = `Bearer ${storedToken}`;
+        try {
+          setUser(JSON.parse(storedUser));
+          api.defaults.headers.Authorization = `Bearer ${storedToken}`;
+        } catch (e) {
+          console.log("Erro ao parsear usuário armazenado");
+        }
       }
       setLoading(false);
     }
@@ -50,22 +58,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const { user, token } = response.data;
 
-    await SecureStore.setItemAsync("user_token", token);
-    await SecureStore.setItemAsync("user_data", JSON.stringify(user));
+    await saveStorageItem("user_token", token);
+    await saveStorageItem("user_data", JSON.stringify(user));
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
     setUser(user);
   }
 
   async function signOut() {
-    await SecureStore.deleteItemAsync("user_token");
-    await SecureStore.deleteItemAsync("user_data");
+    await removeStorageItem("user_token");
+    await removeStorageItem("user_data");
     setUser(null);
   }
 
   async function updateUser(userData: User) {
     setUser(userData);
-    await SecureStore.setItemAsync("user_data", JSON.stringify(userData));
+    await saveStorageItem("user_data", JSON.stringify(userData));
   }
 
   return (

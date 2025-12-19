@@ -8,13 +8,20 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import api from "../../services/api";
+import * as SecureStore from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CreatePost({ navigation }: any) {
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "https://tcc4-learnify-rnmobile-fullstack.onrender.com/api";
+
+export default function CreatePost() {
+  const navigation = useNavigation<any>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState<string | null>(null);
@@ -22,7 +29,7 @@ export default function CreatePost({ navigation }: any) {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images as any,
       allowsEditing: true,
       aspect: [16, 9],
       quality: 0.8,
@@ -53,30 +60,53 @@ export default function CreatePost({ navigation }: any) {
       formData.append("content", content);
 
       if (image) {
-        const filename = image.split("/").pop() || "upload.jpg";
+        const filename = image.split("/").pop() || `upload-${Date.now()}.jpg`;
         const match = /\.(\w+)$/.exec(filename);
         const type = match ? `image/${match[1]}` : `image/jpeg`;
 
+        const uri =
+          Platform.OS === "android" && !image.startsWith("file://")
+            ? `file://${image}`
+            : image;
+
         // @ts-ignore
         formData.append("image", {
-          uri: image,
+          uri: uri,
           name: filename,
-          type,
+          type: type,
         });
       }
 
-      await api.post("/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const token = await SecureStore.getItemAsync("user_token");
+
+      console.log("Enviando via FETCH para:", `${API_URL}/posts`);
+
+      const response = await fetch(`${API_URL}/posts`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || "Erro no servidor");
+      }
 
       Alert.alert("Sucesso", "Post publicado!");
       setTitle("");
       setContent("");
       setImage(null);
       navigation.navigate("Feed");
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Erro", "Não foi possível publicar. Tente novamente.");
+    } catch (error: any) {
+      console.log("Erro no upload:", error);
+      Alert.alert(
+        "Erro",
+        `Falha: ${error.message || "Verifique sua conexão."}`
+      );
     } finally {
       setUploading(false);
     }

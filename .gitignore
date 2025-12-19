@@ -17,6 +17,7 @@ node_modules/
 npm-packages-offline-cache/
 tmp/
 temp/
+.vercel
 
 # =============================
 # 🧪 TESTES

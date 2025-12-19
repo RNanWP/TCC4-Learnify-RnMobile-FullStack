@@ -1,6 +1,7 @@
 import { S3Client } from "@aws-sdk/client-s3";
 
 const isForcePath = process.env.S3_FORCE_PATH_STYLE === "true";
+const isTest = process.env.NODE_ENV === "test" || !process.env.S3_BUCKET;
 
 export const s3 = new S3Client({
   region: process.env.S3_REGION || "sa-east-1",
@@ -11,4 +12,5 @@ export const s3 = new S3Client({
     secretAccessKey: process.env.S3_SECRET_KEY || "",
   },
 });
-export const S3_BUCKET = process.env.S3_BUCKET || "Learnify-uploads";
+export const S3_BUCKET = process.env.S3_BUCKET;
+if (!S3_BUCKET) throw new Error("S3_BUCKET não configurado");
