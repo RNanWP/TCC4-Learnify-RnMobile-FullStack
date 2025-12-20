@@ -3,7 +3,7 @@
   "info": {
     "title": "LearniFy API",
     "version": "1.0.0",
-    "description": "Projeto Learnify, uma plataforma de blog educacional com gestão de utilizadores, posts e comentários utilizando React native Mobile."
+    "description": "Projeto Learnify, uma plataforma de blog educacional com gestão de utilizadores, posts e comentários utilizando React Native Mobile e Node.js."
   },
   "servers": [
     {
@@ -12,7 +12,7 @@
     },
     {
       "url": "https://tcc4-learnify-rnmobile-fullstack.onrender.com/api",
-      "description": "Servidor de Desenvolvimento Local"
+      "description": "Servidor de Produção (Render)"
     }
   ],
   "tags": [
@@ -22,7 +22,7 @@
     },
     {
       "name": "Posts",
-      "description": "Operações relacionadas a posts."
+      "description": "Operações de CRUD de posts e Upload de Imagens."
     },
     {
       "name": "Comentários",
@@ -121,6 +121,11 @@
             "type": "string",
             "example": "Este é o conteúdo do post sobre Node.js..."
           },
+          "image": {
+            "type": "string",
+            "description": "URL da imagem armazenada no S3",
+            "example": "https://meu-bucket.s3.amazonaws.com/upload-123.jpg"
+          },
           "author": {
             "type": "string",
             "description": "ID do utilizador que criou o post.",
@@ -136,8 +141,9 @@
           }
         }
       },
-      "PostInput": {
+      "PostInputJson": {
         "type": "object",
+        "description": "Usado apenas para atualizações de texto (PUT)",
         "required": ["title", "content"],
         "properties": {
           "title": {
@@ -291,7 +297,8 @@
       },
       "post": {
         "tags": ["Posts"],
-        "summary": "Criar um novo post (Professor ou Admin)",
+        "summary": "Criar um novo post com Imagem (Multipart)",
+        "description": "Permite upload de imagem via multipart/form-data. Requer token Bearer.",
         "security": [
           {
             "bearerAuth": []
@@ -300,9 +307,23 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PostInput"
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Arquivo de imagem (jpg, png)"
+                  }
+                },
+                "required": ["title", "content"]
               }
             }
           }
@@ -310,6 +331,12 @@
         "responses": {
           "201": {
             "description": "Post criado com sucesso."
+          },
+          "400": {
+            "description": "Erro na validação ou upload."
+          },
+          "500": {
+            "description": "Erro interno (Upload S3)."
           }
         }
       }
@@ -362,7 +389,7 @@
       },
       "put": {
         "tags": ["Posts"],
-        "summary": "Atualizar um post (Professor ou Admin)",
+        "summary": "Atualizar um post (Texto)",
         "security": [
           {
             "bearerAuth": []
@@ -383,7 +410,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PostInput"
+                "$ref": "#/components/schemas/PostInputJson"
               }
             }
           }
