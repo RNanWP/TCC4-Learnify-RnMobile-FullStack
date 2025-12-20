@@ -1,4 +1,4 @@
-name: CI/CD - LearniFy (Build & Test)
+name: CI/CD - LearniFy Full-Stack (Build & Test)
 
 on:
   push:
@@ -7,8 +7,9 @@ on:
     branches: ["main"]
 
 jobs:
-  build-and-test:
-    name: 🧪 Testes e Build
+  # JOB 1: VERIFICAÇÃO DO BACK-END (API & Testes)
+  backend-check:
+    name: 🛡️ Back-End (Test & Build)
     runs-on: ubuntu-latest
 
     services:
@@ -31,7 +32,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: Back-End/package-lock.json
 
-      - name: 📦 Instalar Dependências
+      - name: 📦 Instalar Dependências (Back)
         working-directory: ./Back-End
         run: npm ci
 
@@ -39,8 +40,37 @@ jobs:
         working-directory: ./Back-End
         run: npm test -- --coverage
         env:
-          # Variáveis exclusivas para o ambiente de CI
           NODE_ENV: test
           JWT_SECRET: "segredo_de_teste_ci_github"
           MONGO_URI: "mongodb://localhost:27017/LearniFy_Test"
-          S3_BUCKET: "teste-bucket" # Mock para passar no CI
+          S3_BUCKET: "teste-bucket-ci"
+
+      - name: 🏗️ Tentar Build do Back-End (Verificar Erros TS)
+        working-directory: ./Back-End
+        run: npm run build
+
+  # JOB 2: VERIFICAÇÃO DO FRONT-END (Web Build)
+  frontend-check:
+    name: 📱 Front-End (Web Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: Front-End/package-lock.json
+
+      - name: 📦 Instalar Dependências (Front)
+        working-directory: ./Front-End
+        run: npm install
+
+      - name: 🏗️ Simular Build Web (Vercel)
+        working-directory: ./Front-End
+        run: npx expo export --platform web
+        env:
+          EXPO_PUBLIC_API_URL: "http://localhost:3000/api"
