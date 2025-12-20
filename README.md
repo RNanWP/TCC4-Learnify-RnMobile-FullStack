@@ -89,7 +89,7 @@ _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir d
     classDef cloud fill:#FF9900,stroke:#333,stroke-width:2px,color:black;
     classDef context fill:#f9f,stroke:#333,stroke-width:2px,color:black;
 
-    subgraph Clientes ["       Camada de Apresentação "]
+    subgraph Clientes ["       (Front-End)       "]
         direction TB
         MobileApp("      📱 Mobile App      <br/>Android APK"):::mobile
         WebApp("      💻 Web App      <br/>Vercel"):::web
@@ -101,7 +101,7 @@ _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir d
         end
     end
 
-    subgraph Servidor ["       Camada de Aplicação (Back-End)       "]
+    subgraph Servidor ["       (Back-End)       "]
         direction TB
         API("      🚀 Express Server      <br/>Node.js"):::backend
 
