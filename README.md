@@ -89,34 +89,34 @@ _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir d
     classDef cloud fill:#FF9900,stroke:#333,stroke-width:2px,color:black;
     classDef context fill:#f9f,stroke:#333,stroke-width:2px,color:black;
 
-    subgraph Clientes ["Camada de Apresentação (Front-End)"]
+    subgraph Clientes ["       Camada de Apresentação "]
         direction TB
-        MobileApp(📱 Mobile App<br/>Android APK):::mobile
-        WebApp(💻 Web App<br/>Vercel):::web
+        MobileApp("      📱 Mobile App      <br/>Android APK"):::mobile
+        WebApp("      💻 Web App      <br/>Vercel"):::web
 
-        subgraph Core ["Lógica do Front-End"]
-            AuthContext(🔐 AuthContext<br/>Estado Global):::context
-            Storage(💾 Storage Adapter<br/>Utils / Persistência):::context
-            Axios(📡 Services API<br/>Axios / Fetch)
+        subgraph Core ["      Lógica do Front-End      "]
+            AuthContext("      🔐 AuthContext      <br/>Estado Global"):::context
+            Storage("      💾 Storage Adapter      <br/>Utils / Persistência"):::context
+            Axios("      📡 Services API      <br/>Axios / Fetch"):::context
         end
     end
 
-    subgraph Servidor ["Camada de Aplicação (Back-End)"]
+    subgraph Servidor ["       Camada de Aplicação (Back-End)       "]
         direction TB
-        API(🚀 Express Server<br/>Node.js):::backend
+        API("      🚀 Express Server      <br/>Node.js"):::backend
 
-        subgraph MVC ["Arquitetura MVC"]
-            Router(🚦 Routes)
-            Middlewares(🛡️ Middlewares<br/>Auth / Upload)
-            Controllers(🎮 Controllers)
-            Services(⚙️ Services<br/>Regras de Negócio)
-            Models(📦 Models<br/>Mongoose Schemas)
+        subgraph MVC ["      Arquitetura MVC      "]
+            Router("   🚦 Routes   ")
+            Middlewares("      🛡️ Middlewares      <br/>Auth / Upload")
+            Controllers("   🎮 Controllers   ")
+            Services("      ⚙️ Services      <br/>Regras de Negócio")
+            Models("      📦 Models      <br/>Mongoose Schemas")
         end
     end
 
-    subgraph Infra ["Infraestrutura e Dados"]
-        MongoDB[(🍃 MongoDB Atlas<br/>Database NoSQL)]:::db
-        AWS_S3(☁️ AWS S3<br/>Storage de Imagens):::cloud
+    subgraph Infra ["       Infraestrutura e Dados       "]
+        MongoDB[("      🍃 MongoDB Atlas      <br/>Database NoSQL")]:::db
+        AWS_S3("      ☁️ AWS S3      <br/>Storage de Imagens"):::cloud
     end
 
     %% Relacionamentos
