@@ -16,6 +16,7 @@
 > Uma rede social acadêmica focada em mobile para conectar alunos e professores através do compartilhamento ágil de conhecimento.
 
 ---
+
 <br />
 
 ## 📸 Demonstração
@@ -25,6 +26,7 @@
 | <img src="https://i.imgur.com/H9Z9V8k.png/150x300?text=Feed" width="150" /> | <img src="https://imgur.com/cJYpuKP.png/150x300?text=Upload" width="150" /> | <img src="https://imgur.com/fSU5KSe.png/150x300=900?text=Web" width="195" /> |
 
 ---
+
 <br />
 
 ## 🛠 Tecnologias Utilizadas
@@ -51,6 +53,7 @@ O projeto foi desenvolvido utilizando uma arquitetura **Full-Stack JavaScript** 
 - **Swagger (OpenAPI):** Documentação automática da API.
 
 ---
+
 <br />
 
 ## 🏗 Arquitetura e Desafios
@@ -71,6 +74,7 @@ Adotamos o padrão **MVC (Model-View-Controller)** no Back-End para separar resp
 _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir do Upload da imagem de perfil Kkkkkkkkk mas valeu a pena_
 
 ---
+
 <br />
 
 ## 🏗️ Arquitetura Geral do Sistema (Full-Stack)
@@ -85,47 +89,47 @@ _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir d
     classDef cloud fill:#FF9900,stroke:#333,stroke-width:2px,color:black;
     classDef context fill:#f9f,stroke:#333,stroke-width:2px,color:black;
 
-    subgraph Clientes ["Camada de Apresentação - Front-End"]
+    subgraph Clientes ["Camada de Apresentação (Front-End)"]
         direction TB
-        MobileApp(📱 Mobile App - Android APK):::mobile
-        WebApp(💻 Web App - Vercel):::web
+        MobileApp(📱 Mobile App<br/>Android APK):::mobile
+        WebApp(💻 Web App<br/>Vercel):::web
 
         subgraph Core ["Lógica do Front-End"]
-            AuthCtx(🔐 AuthContext - Estado Global):::context
-            Storage(💾 Storage Adapter - Utils):::context
-            Axios(📡 Services API - Axios/Fetch)
+            AuthContext(🔐 AuthContext<br/>Estado Global):::context
+            Storage(💾 Storage Adapter<br/>Utils / Persistência):::context
+            Axios(📡 Services API<br/>Axios / Fetch)
         end
     end
 
-    subgraph Servidor ["Camada de Aplicação - Back-End / Render"]
+    subgraph Servidor ["Camada de Aplicação (Back-End)"]
         direction TB
-        API(🚀 Express Server):::backend
+        API(🚀 Express Server<br/>Node.js):::backend
 
         subgraph MVC ["Arquitetura MVC"]
             Router(🚦 Routes)
-            Middlewares(🛡️ Middlewares - Auth/Upload)
+            Middlewares(🛡️ Middlewares<br/>Auth / Upload)
             Controllers(🎮 Controllers)
-            Services(⚙️ Services - Regras de Negócio)
-            Models(📦 Models - Mongoose Schemas)
+            Services(⚙️ Services<br/>Regras de Negócio)
+            Models(📦 Models<br/>Mongoose Schemas)
         end
     end
 
     subgraph Infra ["Infraestrutura e Dados"]
-        MongoDB[(🍃 MongoDB Atlas - Database)]:::db
-        AWS_S3(☁️ AWS S3 - Armazenamento de Imagens):::cloud
+        MongoDB[(🍃 MongoDB Atlas<br/>Database NoSQL)]:::db
+        AWS_S3(☁️ AWS S3<br/>Storage de Imagens):::cloud
     end
 
     %% Relacionamentos
-    MobileApp --> AuthCtx
-    WebApp --> AuthCtx
+    MobileApp --> AuthContext
+    WebApp --> AuthContext
 
-    AuthCtx --> Storage
-    AuthCtx --> Axios
+    AuthContext --> Storage
+    AuthContext --> Axios
 
     Storage -- "SecureStore (Mobile)" --> MobileApp
     Storage -- "LocalStorage (Web)" --> WebApp
 
-    Axios -- "JSON / Multipart (HTTPS)" --> API
+    Axios -- "JSON / Multipart" --> API
 
     API --> Router
     Router --> Middlewares
@@ -135,10 +139,11 @@ _Passei dias tentando fazer funcionar o Upload e mesmo assim tive que desistir d
     Services --> Models
 
     Models -- "Leitura/Escrita" --> MongoDB
-    Middlewares -- "Upload de Arquivos" --> AWS_S3
+    Middlewares -- "Upload" --> AWS_S3
 ```
 
 ---
+
 <br />
 
 ## 🔄 Fluxo de Dados e Arquitetura
@@ -169,6 +174,7 @@ Ao receber a requisição, o servidor processa os dados seguindo a arquitetura M
 6.  **Response:** O servidor retorna o status `201 Created` para o Front-End, que exibe o feedback de sucesso ao usuário.
 
 ---
+
 <br />
 
 ## 📂 Estrutura de Pastas
@@ -213,6 +219,7 @@ A estrutura do projeto foi cuidadosamente organizada para seguir as melhores pr�
 ```
 
 ---
+
 <br />
 
 ### 📊 Diagrama de Sequência (Full-Stack) - _Só pra testar o Mermaid :D_
@@ -244,6 +251,7 @@ sequenceDiagram
 ```
 
 ---
+
 <br />
 
 ## 🚀 Como Rodar o Projeto
@@ -277,6 +285,7 @@ npx expo start --web
 ```
 
 ---
+
 <br />
 
 ## 🧪 Testando a API
@@ -310,7 +319,6 @@ Este projeto utiliza **GitHub Actions** para automação. A cada `push` ou `pull
 1.  O ambiente é configurado com a versão correta do Node.js e um banco de dados MongoDB de teste.
 2.  As dependências são instaladas.
 3.  A suíte de testes completa é executada para garantir que nenhuma funcionalidade foi quebrada.
-
 
 ## 📦 Deploy e Entrega
 
