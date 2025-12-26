@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Front-End",
+    "name": "LearniFy",
     "slug": "Front-End",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,7 +18,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.learnify.tcc"
     },
