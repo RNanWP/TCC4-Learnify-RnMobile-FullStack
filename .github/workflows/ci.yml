@@ -49,9 +49,9 @@ jobs:
         working-directory: ./Back-End
         run: npm run build
 
-  # JOB 2: VERIFICAÇÃO DO FRONT-END (Web Build)
+  # JOB 2: VERIFICAÇÃO DO front-end (Web Build)
   frontend-check:
-    name: 📱 Front-End (Web Build)
+    name: 📱 front-end (Web Build)
     runs-on: ubuntu-latest
 
     steps:
@@ -63,14 +63,14 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          cache-dependency-path: Front-End/package-lock.json
+          cache-dependency-path: front-end/package-lock.json
 
       - name: 📦 Instalar Dependências (Front)
-        working-directory: ./Front-End
+        working-directory: ./front-end
         run: npm install
 
       - name: 🏗️ Simular Build Web (Vercel)
-        working-directory: ./Front-End
+        working-directory: ./front-end
         run: npx expo export --platform web
         env:
           EXPO_PUBLIC_API_URL: "http://localhost:3000/api"
