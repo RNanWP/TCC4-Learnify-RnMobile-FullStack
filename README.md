@@ -278,6 +278,7 @@ npm test
 ```bash
 cd Front-End
 npm install
+npx expo install --fix
 # Rodar no celular/emulador:
 npx expo start
 # Rodar na Web (modo dev):
@@ -330,6 +331,16 @@ Este projeto utiliza **GitHub Actions** para automação. A cada `push` ou `pull
 
 ---
 
+## 📱 Download & Instalação (APK)
+
+Você pode baixar e instalar o aplicativo Android diretamente no seu dispositivo para testar as funcionalidades nativas (Câmera, Galeria, Toast Notifications).
+
+|                           📷 Escaneie o QR Code                           |                                                                                                                                                                                          📥 Link Direto                                                                                                                                                                                          |
+| :-----------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="./front-end/assets/qrcode.png" width="200" alt="QR Code para Download" /> | <a href="https://expo.dev/accounts/rnanwp/projects/Front-End/builds/403f9984-34df-436b-a7e8-e716472427ee"> <img src="https://img.shields.io/badge/BAIXAR_APK-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" /> </a> <br><br> **Versão 1.0.0 (Preview)** <br> 📅 _Build: 26/12/2025_ <br><br> _Nota: Ao instalar, permita "Fontes Desconhecidas" nas configurações do Android._ |
+
+---
+
  <br />
 <br />
 
@@ -341,6 +352,7 @@ Este projeto utiliza **GitHub Actions** para automação. A cada `push` ou `pull
   <a href="https://www.linkedin.com/in/renanodev/">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Badge"/>
   </a>
+
 
   <br />
   <br />
