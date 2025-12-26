@@ -1,8 +1,3 @@
-// Connect to Cluster0 Tech Challenge
-//
-// reenan92011
-// uTUCcf8O3A2bB8P1
-
 //          COISAS A SE FAZER NO PROJETO:
 //
 // Pegar o JWT Token e implementar-lo no código
@@ -56,6 +51,7 @@
 // npm test
 // npx expo start --android --clear
 // npx expo start -c
+// eas build -p android --profile preview --clear-cache
 
 // npm i fastify-type-provider-zod @fastify/cors zod /    NÃO UTILIZADO
 
